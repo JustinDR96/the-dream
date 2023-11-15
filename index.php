@@ -1,29 +1,46 @@
 <?php
 
-$apiKey = 'YfuF5I8fSI5PsHpEFjBK1A==3wc9CqE8xkg8RX6Y'; // Remplacez 'YOUR_API_KEY' par votre clé API
+// Initialisation de l'API
+$apiKey = 'b57227c323b200c8f3ded1b2';
+$url = "https://v6.exchangerate-api.com/v6/{$apiKey}/latest/USD";
 
-$curl = curl_init();
+// Fonction pour récupérer les devises depuis l'API
+function getCurrencies()
+{
+   global $url;
 
-curl_setopt_array($curl, [
-   CURLOPT_URL => 'https://api.api-ninjas.com/v1/convertcurrency?want=EUR&have=USD&amount=5000',
-   CURLOPT_RETURNTRANSFER => true,
-   CURLOPT_CUSTOMREQUEST => 'GET',
-   CURLOPT_HTTPHEADER => [
-      'X-Api-Key: ' . $apiKey,
-      'Content-Type: application/json',
-   ],
-]);
+   $curl = curl_init();
 
-$response = curl_exec($curl);
-$err = curl_error($curl);
+   curl_setopt_array($curl, [
+      CURLOPT_URL => $url,
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_CUSTOMREQUEST => 'GET',
+   ]);
 
-curl_close($curl);
+   $response = curl_exec($curl);
+   $err = curl_error($curl);
 
-if ($err) {
-   echo 'cURL Error #:' . $err;
-} else {
-   // echo $response;
+   curl_close($curl);
+
+   if ($err) {
+      echo 'cURL Error #:' . $err;
+      return [];
+   } else {
+      $data = json_decode($response, true);
+
+      // Vérifiez si la conversion JSON a réussi
+      if ($data !== null && isset($data['conversion_rates'])) {
+         // Extraire les devises disponibles
+         return array_keys($data['conversion_rates']);
+      } else {
+         echo "Erreur lors de la conversion JSON";
+         return [];
+      }
+   }
 }
+
+// Obtenez la liste des devises
+$currencies = getCurrencies();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,11 +58,21 @@ if ($err) {
       <input type="text" name="currency" id="currency" required placeholder="Enter your amount.">
       <div class="select">
          <select id="old_currency" name="old_currency" class="selectCurrency">
-            <option value="USD">$USD</option>
+            <?php
+            // Afficher les options du menu déroulant pour les devises
+            foreach ($currencies as $currencyCode) {
+               echo "<option value=\"$currencyCode\">{$currencyCode}</option>";
+            }
+            ?>
          </select>
          <i class="fas fa-exchange-alt"></i>
          <select id="new_currency" name="new_currency" class="selectCurrency">
-            <option value="USD">$USD</option>
+            <?php
+            // Afficher les options du menu déroulant pour les devises
+            foreach ($currencies as $currencyCode) {
+               echo "<option value=\"$currencyCode\">{$currencyCode}</option>";
+            }
+            ?>
          </select>
       </div>
 
