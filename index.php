@@ -1,46 +1,45 @@
 <?php
 
-// Initialisation de l'API
 $apiKey = 'b57227c323b200c8f3ded1b2';
-$url = "https://v6.exchangerate-api.com/v6/{$apiKey}/latest/USD";
+$req_url = "https://v6.exchangerate-api.com/v6/{$apiKey}/latest/USD";
+$response_json = file_get_contents($req_url);
 
-// Fonction pour récupérer les devises depuis l'API
-function getCurrencies()
-{
-   global $url;
+if (false !== $response_json) {
 
-   $curl = curl_init();
+   try {
 
-   curl_setopt_array($curl, [
-      CURLOPT_URL => $url,
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_CUSTOMREQUEST => 'GET',
-   ]);
+      $response = json_decode($response_json);
 
-   $response = curl_exec($curl);
-   $err = curl_error($curl);
+      if ('success' === $response->result) {
 
-   curl_close($curl);
+         $currencies = array_keys((array)$response->conversion_rates);
+      }
+   } catch (Exception $e) {
+   }
+}
 
-   if ($err) {
-      echo 'cURL Error #:' . $err;
-      return [];
-   } else {
-      $data = json_decode($response, true);
+// Process the form
+$convertedAmount = null;
+if ($_SERVER["REQUEST_METHOD"] == "GET") {
+   if (isset($_GET['currency']) && isset($_GET['old_currency']) && isset($_GET['new_currency'])) {
+      $amount = $_GET['currency'];
+      $fromCurrency = $_GET['old_currency'];
+      $toCurrency = $_GET['new_currency'];
 
-      // Vérifiez si la conversion JSON a réussi
-      if ($data !== null && isset($data['conversion_rates'])) {
-         // Extraire les devises disponibles
-         return array_keys($data['conversion_rates']);
-      } else {
-         echo "Erreur lors de la conversion JSON";
-         return [];
+      $conversionUrl = "https://v6.exchangerate-api.com/v6/{$apiKey}/pair/{$fromCurrency}/{$toCurrency}/{$amount}";
+
+      $conversion_json = file_get_contents($conversionUrl);
+
+      if ($conversion_json !== false) {
+         $conversion_data = json_decode($conversion_json);
+
+         if ($conversion_data && $conversion_data->result === 'success') {
+            $convertedAmount = $conversion_data->conversion_result;
+         }
       }
    }
 }
 
-// Obtenez la liste des devises
-$currencies = getCurrencies();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -59,26 +58,48 @@ $currencies = getCurrencies();
       <div class="select">
          <select id="old_currency" name="old_currency" class="selectCurrency">
             <?php
-            // Afficher les options du menu déroulant pour les devises
-            foreach ($currencies as $currencyCode) {
-               echo "<option value=\"$currencyCode\">{$currencyCode}</option>";
+            // Display dropdown options for old currency
+            if (isset($currencies)) {
+               foreach ($currencies as $currencyCode) {
+                  echo "<option value=\"$currencyCode\">{$currencyCode}</option>";
+               }
             }
             ?>
          </select>
-         <i class="fas fa-exchange-alt"></i>
+         <i class="fas fa-exchange-alt" onclick="swapCurrencies()"></i>
          <select id="new_currency" name="new_currency" class="selectCurrency">
             <?php
-            // Afficher les options du menu déroulant pour les devises
-            foreach ($currencies as $currencyCode) {
-               echo "<option value=\"$currencyCode\">{$currencyCode}</option>";
+            // Display dropdown options for old currency
+            if (isset($currencies)) {
+               foreach ($currencies as $currencyCode) {
+                  echo "<option value=\"$currencyCode\">{$currencyCode}</option>";
+               }
             }
             ?>
          </select>
       </div>
 
       <input type="submit" value="Convert" class="convert">
-      <h5 class="finalAmount" id="finalAmount">montant final</h5>
+      <?php
+      // Display the converted amount if available
+      if ($convertedAmount !== null) {
+         $toCurrency = $_GET['new_currency'];
+         echo "<h5 class=\"finalAmount\">Montant converti : $convertedAmount $toCurrency</h5>";
+      }
+      ?>
    </form>
+   <script>
+      function swapCurrencies() {
+         var oldCurrencySelect = document.getElementById('old_currency');
+         var newCurrencySelect = document.getElementById('new_currency');
+         var tempCurrency = oldCurrencySelect.value;
+         oldCurrencySelect.value = newCurrencySelect.value;
+         newCurrencySelect.value = tempCurrency;
+
+         // Set the exchangeFlag to 1 to indicate that the currencies were swapped
+         document.getElementById('exchangeFlag').value = 1;
+      }
+   </script>
 </body>
 
 </html>
