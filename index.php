@@ -84,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
       // Display the converted amount if available
       if ($convertedAmount !== null) {
          $toCurrency = $_GET['new_currency'];
-         echo "<h5 class=\"finalAmount\">Montant converti : $convertedAmount $toCurrency</h5>";
+         echo "<h5 class=\"finalAmount\">$convertedAmount $toCurrency</h5>";
       }
       ?>
    </form>
