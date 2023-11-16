@@ -18,7 +18,6 @@ if (false !== $response_json) {
    }
 }
 
-// Process the form
 $convertedAmount = null;
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
    if (isset($_GET['currency']) && isset($_GET['old_currency']) && isset($_GET['new_currency'])) {
@@ -58,7 +57,6 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
       <div class="select">
          <select id="old_currency" name="old_currency" class="selectCurrency">
             <?php
-            // Display dropdown options for old currency
             if (isset($currencies)) {
                foreach ($currencies as $currencyCode) {
                   echo "<option value=\"$currencyCode\">{$currencyCode}</option>";
@@ -69,7 +67,6 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
          <i class="fas fa-exchange-alt" onclick="swapCurrencies()"></i>
          <select id="new_currency" name="new_currency" class="selectCurrency">
             <?php
-            // Display dropdown options for old currency
             if (isset($currencies)) {
                foreach ($currencies as $currencyCode) {
                   echo "<option value=\"$currencyCode\">{$currencyCode}</option>";
@@ -81,7 +78,6 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 
       <input type="submit" value="Convert" class="convert">
       <?php
-      // Display the converted amount if available
       if ($convertedAmount !== null) {
          $toCurrency = $_GET['new_currency'];
          echo "<h5 class=\"finalAmount\">$convertedAmount $toCurrency</h5>";
@@ -96,7 +92,6 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
          oldCurrencySelect.value = newCurrencySelect.value;
          newCurrencySelect.value = tempCurrency;
 
-         // Set the exchangeFlag to 1 to indicate that the currencies were swapped
          document.getElementById('exchangeFlag').value = 1;
       }
    </script>

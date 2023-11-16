@@ -24,7 +24,7 @@ form {
   justify-content: space-around;
   align-items: center;
   gap: 50px;
-  padding: 10px 10px;
+  padding: 10px 0px 10px 0px;
   background: rgba(255, 255, 255, 0);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   backdrop-filter: blur(10.5px);
@@ -32,11 +32,11 @@ form {
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   #currency {
-    width: 100%;
+    width: 70%;
     height: 50px;
     outline: none;
     border: none;
-    border-radius: 10px;
+    border-radius: 5px;
     padding-left: 2px;
     font-size: 25px;
   }
@@ -64,7 +64,7 @@ form {
     }
   }
   .convert {
-    width: 80%;
+    width: 70%;
     height: 50px;
     border-radius: 10px;
     border: none;
@@ -72,10 +72,11 @@ form {
     font-size: 20px;
     background-color: #25b6bc;
     color: #fff;
+    text-transform: uppercase;
   }
   .finalAmount {
     color: rgb(0, 0, 0);
-    width: 250px;
+    width: 70%;
     height: 50px;
     border-radius: 10px;
     background-color: #fff;
