@@ -91,7 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
          var tempCurrency = oldCurrencySelect.value;
          oldCurrencySelect.value = newCurrencySelect.value;
          newCurrencySelect.value = tempCurrency;
-
+         
          document.getElementById('exchangeFlag').value = 1;
       }
    </script>
