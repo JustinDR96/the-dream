@@ -59,7 +59,8 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             <?php
             if (isset($currencies)) {
                foreach ($currencies as $currencyCode) {
-                  echo "<option value=\"$currencyCode\">{$currencyCode}</option>";
+                  $selected = ($currencyCode == 'EUR') ? 'selected' : '';
+                  echo "<option value=\"$currencyCode\" $selected>{$currencyCode}</option>";
                }
             }
             ?>
@@ -91,7 +92,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
          var tempCurrency = oldCurrencySelect.value;
          oldCurrencySelect.value = newCurrencySelect.value;
          newCurrencySelect.value = tempCurrency;
-         
+
          document.getElementById('exchangeFlag').value = 1;
       }
    </script>
