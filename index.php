@@ -1,6 +1,5 @@
 <?php
-$config = require('config.php');
-$apiKey = $config['apiKey'];
+$apiKey = 'b57227c323b200c8f3ded1b2';
 $req_url = "https://v6.exchangerate-api.com/v6/{$apiKey}/latest/USD";
 $response_json = file_get_contents($req_url);
 
