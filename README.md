@@ -1,3 +1,3 @@
 # the-dream
 
-[live version](the-dream-justin.infinityfreeapp.com)
+[live version](http://the-dream-justin.infinityfreeapp.com/?i=1)
